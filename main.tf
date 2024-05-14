@@ -52,7 +52,7 @@ resource "harvester_virtualmachine" "vm" {
   }
 
   ssh_keys = [
-    harvester_ssh_key.mysshkey.id
+    data.harvester_ssh_key.mysshkey.id
   ]
 
 }
