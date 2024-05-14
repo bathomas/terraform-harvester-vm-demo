@@ -8,6 +8,15 @@ data "harvester_ssh_key" "mysshkey" {
   namespace = var.namespace
 }
 
+resource "harvester_cloudinit_secret" "cloud-config" {
+  name      = "cloud-config-${var.prefix}"
+  namespace = var.namespace
+
+  user_data = templatefile("cloud-init.tmpl.yml", {
+      public_key_openssh = data.harvester_ssh_key.mysshkey.public_key
+    })
+}
+
 resource "harvester_virtualmachine" "vm" {
   
   count = var.vm_count
@@ -17,10 +26,6 @@ resource "harvester_virtualmachine" "vm" {
   restart_after_update = true
 
   description = "Demo VM"
-
-  tags = {
-    ssh-user = "cloud-user"
-  }
 
   cpu    = 2
   memory = "4Gi"
@@ -51,8 +56,8 @@ resource "harvester_virtualmachine" "vm" {
     auto_delete = true
   }
 
-  ssh_keys = [
-    data.harvester_ssh_key.mysshkey.id
-  ]
+  cloudinit {
+    user_data_secret_name = harvester_cloudinit_secret.cloud-config.name
+  }
 
 }
