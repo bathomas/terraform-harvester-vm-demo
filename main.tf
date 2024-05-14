@@ -13,7 +13,7 @@ resource "random_id" "secret" {
 }
 
 resource "harvester_cloudinit_secret" "cloud-config" {
-  name      = "cloud-config-${var.prefix}${random_id.secret.id}"
+  name      = "cloud-config-${random_id.secret.id}-${var.prefix}"
   namespace = var.namespace
 
   user_data = templatefile("cloud-init.tmpl.yml", {
