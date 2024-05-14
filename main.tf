@@ -8,8 +8,12 @@ data "harvester_ssh_key" "mysshkey" {
   namespace = var.namespace
 }
 
+resource "random_id" "secret" {
+  byte_length = 5
+}
+
 resource "harvester_cloudinit_secret" "cloud-config" {
-  name      = "cloud-config-${var.prefix}"
+  name      = "cloud-config-${var.prefix}${random_id.secret.id}"
   namespace = var.namespace
 
   user_data = templatefile("cloud-init.tmpl.yml", {
