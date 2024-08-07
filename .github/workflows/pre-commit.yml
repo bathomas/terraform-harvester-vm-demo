@@ -6,6 +6,7 @@
       push:
         branches:
           - "main"
+          - "renovate/**"
     
     jobs:
       pre-commit:
